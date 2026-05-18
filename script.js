@@ -4,6 +4,7 @@ const EXPIRY_TIME = 30 * 60 * 1000;
 let count = 0;
 let orders = [];
 let selectedImage = "";
+let currentImageOrderId = null;
 
 const mainCounter = document.getElementById("mainCounter");
 const minusBtn = document.getElementById("minusBtn");
@@ -11,8 +12,7 @@ const saveBtn = document.getElementById("saveBtn");
 const resetBtn = document.getElementById("resetBtn");
 const refreshBtn = document.getElementById("refreshBtn");
 const ordersContainer = document.getElementById("ordersContainer");
-const imageInput = document.getElementById("imageInput");
-const captureBtn = document.getElementById("captureBtn");
+
 
 // Load saved orders
 function loadOrders() {
@@ -38,25 +38,6 @@ function saveToStorage() {
 function updateCounter() {
   mainCounter.textContent = count;
 }
-
-// Capture image
-captureBtn.addEventListener("click", () => {
-  imageInput.click();
-});
-
-imageInput.addEventListener("change", (e) => {
-  const file = e.target.files[0];
-
-  if (!file) return;
-
-  const reader = new FileReader();
-
-  reader.onload = function(event) {
-    selectedImage = event.target.result;
-  };
-
-  reader.readAsDataURL(file);
-});
 
 // Show fullscreen image
 function showImage(imageSrc) {
@@ -85,7 +66,17 @@ function renderOrders() {
     card.innerHTML = `
       <div style="display:flex; align-items:center;">
 
-        ${order.image ? `<img src="${order.image}" class="order-image" />` : ""}
+        ${order.image
+          ? `<img src="${order.image}" class="order-image" />`
+          : `
+            <div>
+              <button class="capture-btn" data-id="${order.id}">
+                Add Image
+              </button>
+              <input type="file" class="hidden-input" accept="image/*" capture="environment" data-id="${order.id}" />
+            </div>
+          `}
+
 
         <div class="order-left">
           <h2>Order ${index + 1}</h2>
@@ -106,6 +97,40 @@ function renderOrders() {
       image.addEventListener("click", () => {
         showImage(order.image);
       });
+    }
+
+    const captureButton = card.querySelector(".capture-btn");
+    const hiddenInput = card.querySelector(".hidden-input");
+
+    if (captureButton && hiddenInput) {
+      captureButton.addEventListener("click", () => {
+        currentImageOrderId = Number(captureButton.dataset.id);
+        hiddenInput.click();
+      });
+
+      hiddenInput.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+
+        if (!file) return;
+
+        const reader = new FileReader();
+
+        reader.onload = function(event) {
+          const orderIndex = orders.findIndex(
+            order => order.id === currentImageOrderId
+          );
+
+          if (orderIndex !== -1) {
+            orders[orderIndex].image = event.target.result;
+
+            saveToStorage();
+            renderOrders();
+          }
+        };
+
+        reader.readAsDataURL(file);
+      });
+    });
     }
   });
 }
@@ -131,8 +156,9 @@ saveBtn.addEventListener("click", () => {
   if (count <= 0) return;
 
   orders.push({
+    id: Date.now(),
     count,
-    image: selectedImage,
+    image: "",
     timestamp: Date.now()
   });
 
@@ -146,7 +172,6 @@ saveBtn.addEventListener("click", () => {
 
   count = 0;
   selectedImage = "";
-  imageInput.value = "";
   updateCounter();
 
   navigator.vibrate?.([100, 50, 100]);
