@@ -136,7 +136,11 @@ function renderOrders() {
 }
 
 // Increase count
-mainCounter.addEventListener("click", () => {
+// Increase count
+mainCounter.style.pointerEvents = "auto";
+
+mainCounter.addEventListener("click", (e) => {
+  e.stopPropagation();
   count++;
   updateCounter();
 
