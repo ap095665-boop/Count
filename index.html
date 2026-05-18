@@ -454,6 +454,44 @@ const addBtn=card.querySelector('.add-image-btn');
 const fileInput=card.querySelector('.hidden-input');
 
 if(addBtn && fileInput){
+addBtn.onclick=()=>{
+fileInput.click();
+};
+
+fileInput.onchange=(e)=>{
+const file=e.target.files[0];
+
+if(!file)return;
+
+const reader=new FileReader();
+
+reader.onload=(event)=>{
+const targetId=Number(fileInput.dataset.id);
+
+orders=orders.map(o=>{
+if(o.id===targetId){
+return {
+...o,
+image:event.target.result
+};
+}
+return o;
+});
+
+saveOrders();
+renderOrders();
+};
+
+reader.readAsDataURL(file);
+};
+}
+});
+}
+
+const addBtn=card.querySelector('.add-image-btn');
+const fileInput=card.querySelector('.hidden-input');
+
+if(addBtn && fileInput){
 addBtn.addEventListener('click',()=>{
 fileInput.click();
 });
