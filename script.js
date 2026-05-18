@@ -3,6 +3,7 @@ const EXPIRY_TIME = 30 * 60 * 1000;
 
 let count = 0;
 let orders = [];
+let selectedImage = "";
 
 const mainCounter = document.getElementById("mainCounter");
 const minusBtn = document.getElementById("minusBtn");
@@ -10,6 +11,8 @@ const saveBtn = document.getElementById("saveBtn");
 const resetBtn = document.getElementById("resetBtn");
 const refreshBtn = document.getElementById("refreshBtn");
 const ordersContainer = document.getElementById("ordersContainer");
+const imageInput = document.getElementById("imageInput");
+const captureBtn = document.getElementById("captureBtn");
 
 // Load saved orders
 function loadOrders() {
@@ -36,6 +39,41 @@ function updateCounter() {
   mainCounter.textContent = count;
 }
 
+// Capture image
+captureBtn.addEventListener("click", () => {
+  imageInput.click();
+});
+
+imageInput.addEventListener("change", (e) => {
+  const file = e.target.files[0];
+
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function(event) {
+    selectedImage = event.target.result;
+  };
+
+  reader.readAsDataURL(file);
+});
+
+// Show fullscreen image
+function showImage(imageSrc) {
+  const modal = document.createElement("div");
+  modal.className = "image-modal";
+
+  modal.innerHTML = `
+    <img src="${imageSrc}" />
+  `;
+
+  modal.addEventListener("click", () => {
+    modal.remove();
+  });
+
+  document.body.appendChild(modal);
+}
+
 // Render orders
 function renderOrders() {
   ordersContainer.innerHTML = "";
@@ -45,9 +83,14 @@ function renderOrders() {
     card.className = "order-card";
 
     card.innerHTML = `
-      <div class="order-left">
-        <h2>Order ${index + 1}</h2>
-        <p>Saved locally</p>
+      <div style="display:flex; align-items:center;">
+
+        ${order.image ? `<img src="${order.image}" class="order-image" />` : ""}
+
+        <div class="order-left">
+          <h2>Order ${index + 1}</h2>
+          <p>Saved locally</p>
+        </div>
       </div>
 
       <div class="small-circle">
@@ -56,6 +99,14 @@ function renderOrders() {
     `;
 
     ordersContainer.appendChild(card);
+
+    const image = card.querySelector(".order-image");
+
+    if (image) {
+      image.addEventListener("click", () => {
+        showImage(order.image);
+      });
+    }
   });
 }
 
@@ -81,6 +132,7 @@ saveBtn.addEventListener("click", () => {
 
   orders.push({
     count,
+    image: selectedImage,
     timestamp: Date.now()
   });
 
@@ -93,6 +145,8 @@ saveBtn.addEventListener("click", () => {
   renderOrders();
 
   count = 0;
+  selectedImage = "";
+  imageInput.value = "";
   updateCounter();
 
   navigator.vibrate?.([100, 50, 100]);
