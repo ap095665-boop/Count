@@ -17,7 +17,6 @@ body{
 background:#050505;
 color:white;
 min-height:100vh;
-overflow-x:hidden;
 }
 
 .app{
@@ -28,14 +27,12 @@ padding:20px 16px 120px;
 
 .header{
 text-align:center;
-margin-top:10px;
-margin-bottom:30px;
+margin-bottom:25px;
 }
 
 .header h1{
 font-size:32px;
 font-weight:900;
-letter-spacing:2px;
 }
 
 .header p{
@@ -43,64 +40,59 @@ color:#888;
 margin-top:8px;
 }
 
-.counter-wrapper{
+.counter-wrap{
 display:flex;
 justify-content:center;
-align-items:center;
-margin-top:15px;
-margin-bottom:25px;
+margin:20px 0 30px;
 }
 
-.main-counter{
--webkit-tap-highlight-color:transparent;
-touch-action:manipulation;
-width:280px;
-height:280px;
+.counter{
+width:270px;
+height:270px;
 border-radius:50%;
-background:linear-gradient(145deg,#121212,#1f1f1f);
-border:8px solid #ffffff22;
+background:#121212;
+border:7px solid #2a2a2a;
 display:flex;
 align-items:center;
 justify-content:center;
-font-size:95px;
+font-size:90px;
 font-weight:900;
 user-select:none;
 cursor:pointer;
+-webkit-tap-highlight-color:transparent;
+touch-action:manipulation;
+box-shadow:0 0 35px rgba(255,255,255,0.08);
 position:relative;
-transition:0.12s;
-box-shadow:
-0 0 50px rgba(255,255,255,0.08),
-inset 0 0 25px rgba(255,255,255,0.04);
 }
 
-.main-counter:active{
-transform:scale(0.96);
+.counter:active{
+transform:scale(0.97);
 }
 
-.main-counter::after{
+.counter::after{
 content:'TAP';
 position:absolute;
-bottom:28px;
-font-size:18px;
+bottom:24px;
+font-size:16px;
+color:#666;
 letter-spacing:4px;
-color:#777;
 }
 
 .controls{
 display:flex;
-gap:14px;
+gap:12px;
 margin-bottom:28px;
 }
 
-.controls button{
+.controls button,
+.bottom-bar button{
 flex:1;
 border:none;
 border-radius:18px;
 padding:18px;
-font-size:20px;
+font-size:18px;
 font-weight:800;
 cursor:pointer;
-transition:0.2s;
 }
 
 .minus-btn{
@@ -113,27 +105,20 @@ background:#00c853;
 color:white;
 }
 
-.orders-title{
-margin-bottom:18px;
-font-size:22px;
-font-weight:800;
-}
-
 .orders{
 display:flex;
 flex-direction:column;
-gap:18px;
+gap:16px;
 }
 
 .order-card{
 background:#101010;
-border:1px solid #242424;
-border-radius:28px;
-padding:18px;
+border:1px solid #232323;
+border-radius:24px;
+padding:16px;
 display:flex;
 justify-content:space-between;
 align-items:center;
-box-shadow:0 0 20px rgba(255,255,255,0.03);
 }
 
 .order-left{
@@ -146,14 +131,10 @@ gap:14px;
 width:72px;
 height:72px;
 border-radius:50%;
-background:#181818;
 overflow:hidden;
-display:flex;
-align-items:center;
-justify-content:center;
-flex-shrink:0;
+background:#1b1b1b;
 border:2px solid #333;
-position:relative;
+flex-shrink:0;
 }
 
 .image-area img{
@@ -163,20 +144,20 @@ object-fit:cover;
 cursor:pointer;
 }
 
-.add-image-btn{
+.add-image{
 width:100%;
 height:100%;
 border:none;
 background:#2962ff;
 color:white;
 font-size:11px;
-font-weight:700;
+font-weight:800;
 cursor:pointer;
 padding:6px;
 }
 
 .order-info h2{
-font-size:21px;
+font-size:20px;
 margin-bottom:4px;
 }
 
@@ -186,17 +167,16 @@ font-size:14px;
 }
 
 .count-circle{
-width:90px;
-height:90px;
+width:84px;
+height:84px;
 border-radius:50%;
 background:white;
 color:black;
 display:flex;
 align-items:center;
 justify-content:center;
-font-size:40px;
+font-size:38px;
 font-weight:900;
-flex-shrink:0;
 }
 
 .bottom-bar{
@@ -204,21 +184,11 @@ position:fixed;
 bottom:0;
 left:0;
 width:100%;
-background:#0d0d0d;
 padding:14px;
+background:#0d0d0d;
 display:flex;
 gap:12px;
 border-top:1px solid #222;
-}
-
-.bottom-bar button{
-flex:1;
-border:none;
-border-radius:16px;
-padding:16px;
-font-size:18px;
-font-weight:800;
-cursor:pointer;
 }
 
 .reset-btn{
@@ -251,25 +221,11 @@ padding:20px;
 .modal img{
 max-width:100%;
 max-height:90vh;
-border-radius:24px;
+border-radius:20px;
 }
 
 .hidden-input{
 display:none;
-}
-
-@media(max-width:520px){
-.main-counter{
-width:240px;
-height:240px;
-font-size:82px;
-}
-
-.count-circle{
-width:74px;
-height:74px;
-font-size:34px;
-}
 }
 </style>
 </head>
@@ -279,19 +235,17 @@ font-size:34px;
 
 <div class="header">
 <h1>DELIVERY COUNTER</h1>
-<p>Tap to count delivery products</p>
+<p>IndexedDB Photo Storage</p>
 </div>
 
-<div class="counter-wrapper">
-<div class="main-counter" id="counter">0</div>
+<div class="counter-wrap">
+<div class="counter" id="counter">0</div>
 </div>
 
 <div class="controls">
 <button class="minus-btn" id="minusBtn">− Remove</button>
 <button class="save-btn" id="saveBtn">Save Order</button>
 </div>
-
-<h2 class="orders-title">Saved Orders</h2>
 
 <div class="orders" id="orders"></div>
 
@@ -303,11 +257,12 @@ font-size:34px;
 </div>
 
 <script>
-const STORAGE_KEY='delivery-counter-orders';
-const EXPIRY_TIME=30*60*1000;
+const DB_NAME='DeliveryCounterDB';
+const STORE_NAME='orders';
+const EXPIRY=30*60*1000;
 
+let db;
 let count=0;
-let orders=[];
 
 const counter=document.getElementById('counter');
 const minusBtn=document.getElementById('minusBtn');
@@ -322,30 +277,51 @@ navigator.vibrate(ms);
 }
 }
 
+function openDB(){
+const request=indexedDB.open(DB_NAME,1);
+
+request.onupgradeneeded=function(event){
+db=event.target.result;
+
+if(!db.objectStoreNames.contains(STORE_NAME)){
+db.createObjectStore(STORE_NAME,{keyPath:'id'});
+}
+};
+
+request.onsuccess=function(event){
+db=event.target.result;
+loadOrders();
+cleanupExpired();
+};
+}
+
 function updateCounter(){
-counter.textContent=count;
+counter.innerText=count;
 }
 
 function increaseCounter(){
 count++;
 updateCounter();
-vibrate(25);
+vibrate(20);
 }
 
-counter.addEventListener('click',increaseCounter);
-counter.addEventListener('touchstart',(e)=>{
+counter.onclick=function(){
+increaseCounter();
+};
+
+counter.ontouchend=function(e){
 e.preventDefault();
 increaseCounter();
-},{passive:false});
+};
 
-minusBtn.addEventListener('click',()=>{
+minusBtn.onclick=function(){
 if(count>0){
 count--;
 updateCounter();
 }
-});
+};
 
-saveBtn.addEventListener('click',()=>{
+saveBtn.onclick=function(){
 if(count<=0)return;
 
 const order={
@@ -355,65 +331,66 @@ image:'',
 timestamp:Date.now()
 };
 
-orders.push(order);
-
-if(orders.length>5){
-orders.shift();
-}
-
-saveOrders();
-renderOrders();
-
+saveOrder(order);
 count=0;
 updateCounter();
-
 vibrate([80,40,80]);
-});
+};
 
-resetBtn.addEventListener('click',()=>{
+resetBtn.onclick=function(){
 count=0;
 updateCounter();
-});
+};
 
-refreshBtn.addEventListener('click',()=>{
+refreshBtn.onclick=function(){
 const ok=confirm('Delete all orders?');
 
 if(ok){
-localStorage.removeItem(STORAGE_KEY);
-orders=[];
+const tx=db.transaction(STORE_NAME,'readwrite');
+const store=tx.objectStore(STORE_NAME);
+store.clear();
+
+ordersContainer.innerHTML='';
 count=0;
 updateCounter();
-renderOrders();
+renderEmpty();
 }
-});
+};
 
-function saveOrders(){
-localStorage.setItem(STORAGE_KEY,JSON.stringify(orders));
+function saveOrder(order){
+const tx=db.transaction(STORE_NAME,'readwrite');
+const store=tx.objectStore(STORE_NAME);
+
+store.put(order);
+
+loadOrders();
 }
 
 function loadOrders(){
-const saved=localStorage.getItem(STORAGE_KEY);
+const tx=db.transaction(STORE_NAME,'readonly');
+const store=tx.objectStore(STORE_NAME);
+const request=store.getAll();
 
-if(saved){
-const parsed=JSON.parse(saved);
-const now=Date.now();
+request.onsuccess=function(){
+let orders=request.result;
 
-orders=parsed.filter(order=>now-order.timestamp<EXPIRY_TIME);
+orders=orders.sort((a,b)=>a.id-b.id).slice(-5);
 
-saveOrders();
-renderOrders();
+renderOrders(orders);
+};
 }
+
+function renderEmpty(){
+ordersContainer.innerHTML=`
+<div class="empty">No saved orders</div>
+`;
 }
 
-function renderOrders(){
+function renderOrders(orders){
 ordersContainer.innerHTML='';
 
 if(orders.length===0){
-ordersContainer.innerHTML=`
-<div class="empty">
-No saved orders
-</div>
-`;
+renderEmpty();
 return;
 }
 
@@ -426,135 +403,118 @@ card.innerHTML=`
 
 <div class="image-area">
 ${order.image
-? `<img src="${order.image}" class="preview-image">`
+? `<img src="${order.image}" class="preview-img">`
 : `
-<button class="add-image-btn" data-id="${order.id}">
-ADD IMAGE
-</button>
-<input type="file" class="hidden-input" accept="image/*" capture="environment" data-id="${order.id}">
+<button class="add-image">ADD IMAGE</button>
+<input type="file" class="hidden-input" accept="image/*" capture="environment">
 `
 }
 </div>
 
 <div class="order-info">
 <h2>Order ${index+1}</h2>
-<p>Stored for 30 minutes</p>
+<p>Auto deletes in 30 mins</p>
 </div>
 
 </div>
 
-<div class="count-circle">
-${order.count}
-</div>
+<div class="count-circle">${order.count}</div>
 `;
 
 ordersContainer.appendChild(card);
 
-const previewImage=card.querySelector('.preview-image');
+const preview=card.querySelector('.preview-img');
 
-if(previewImage){
-previewImage.addEventListener('click',()=>{
-showImage(previewImage.src);
-});
+if(preview){
+preview.onclick=function(){
+showImage(order.image);
+};
 }
 
-const addBtn=card.querySelector('.add-image-btn');
-const fileInput=card.querySelector('.hidden-input');
+const addBtn=card.querySelector('.add-image');
+const input=card.querySelector('.hidden-input');
 
-if(addBtn && fileInput){
-addBtn.onclick=()=>{
-fileInput.click();
+if(addBtn && input){
+addBtn.onclick=function(){
+input.click();
 };
 
-fileInput.onchange=(e)=>{
+input.onchange=function(e){
 const file=e.target.files[0];
 
 if(!file)return;
 
-const reader=new FileReader();
-
-reader.onload=(event)=>{
-const targetId=Number(fileInput.dataset.id);
-
-orders=orders.map(o=>{
-if(o.id===targetId){
-return {
-...o,
-image:event.target.result
-};
-}
-return o;
+compressImage(file,function(result){
+order.image=result;
+saveOrder(order);
 });
-
-saveOrders();
-renderOrders();
-};
-
-reader.readAsDataURL(file);
 };
 }
 });
 }
 
-const addBtn=card.querySelector('.add-image-btn');
-const fileInput=card.querySelector('.hidden-input');
-
-if(addBtn && fileInput){
-addBtn.addEventListener('click',()=>{
-fileInput.click();
-});
-
-fileInput.addEventListener('change',(e)=>{
-const file=e.target.files[0];
-
-if(!file)return;
-
+function compressImage(file,callback){
 const reader=new FileReader();
 
 reader.onload=function(event){
-const targetId=Number(fileInput.dataset.id);
+const img=new Image();
 
-const orderIndex=orders.findIndex(o=>o.id===targetId);
+img.onload=function(){
+const canvas=document.createElement('canvas');
+const ctx=canvas.getContext('2d');
 
-if(orderIndex!==-1){
-orders[orderIndex].image=event.target.result;
+const maxWidth=500;
+const scale=maxWidth/img.width;
 
-saveOrders();
-renderOrders();
-}
+canvas.width=maxWidth;
+canvas.height=img.height*scale;
+
+ctx.drawImage(img,0,0,canvas.width,canvas.height);
+
+const compressed=canvas.toDataURL('image/jpeg',0.7);
+callback(compressed);
+};
+
+img.src=event.target.result;
 };
 
 reader.readAsDataURL(file);
-});
-}
-});
 }
 
 function showImage(src){
 const modal=document.createElement('div');
 modal.className='modal';
 
-modal.innerHTML=`
-<img src="${src}">
-`;
+modal.innerHTML=`<img src="${src}">`;
 
-modal.addEventListener('click',()=>{
+modal.onclick=function(){
 modal.remove();
-});
+};
 
 document.body.appendChild(modal);
 }
 
+function cleanupExpired(){
 setInterval(()=>{
+const tx=db.transaction(STORE_NAME,'readwrite');
+const store=tx.objectStore(STORE_NAME);
+const request=store.getAll();
+
+request.onsuccess=function(){
 const now=Date.now();
 
-orders=orders.filter(order=>now-order.timestamp<EXPIRY_TIME);
-
-saveOrders();
-renderOrders();
-},60000);
+request.result.forEach(order=>{
+if(now-order.timestamp>EXPIRY){
+store.delete(order.id);
+}
+});
 
 loadOrders();
+};
+},60000);
+}
+
+openDB();
 updateCounter();
 </script>
 
