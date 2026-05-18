@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product Counter</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="app">
+
+    <h1 class="title">PRODUCT COUNTER</h1>
+
+    <!-- Main Counter -->
+    <div class="counter-section">
+      <div id="mainCounter" class="main-circle">
+        0
+      </div>
+
+      <p class="tap-text">Tap circle to count products</p>
+
+      <div class="control-buttons">
+        <button id="minusBtn">−</button>
+        <button id="saveBtn">Save Order</button>
+      </div>
+    </div>
+
+    <!-- Orders -->
+    <div id="ordersContainer" class="orders-container"></div>
+
+    <!-- Bottom Action Buttons -->
+    <div class="bottom-buttons">
+      <button id="resetBtn" class="reset-btn">Reset</button>
+      <button id="refreshBtn" class="refresh-btn">Refresh</button>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
