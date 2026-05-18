@@ -52,6 +52,8 @@ margin-bottom:25px;
 }
 
 .main-counter{
+-webkit-tap-highlight-color:transparent;
+touch-action:manipulation;
 width:280px;
 height:280px;
 border-radius:50%;
@@ -324,11 +326,17 @@ function updateCounter(){
 counter.textContent=count;
 }
 
-counter.addEventListener('click',()=>{
+function increaseCounter(){
 count++;
 updateCounter();
 vibrate(25);
-});
+}
+
+counter.addEventListener('click',increaseCounter);
+counter.addEventListener('touchstart',(e)=>{
+e.preventDefault();
+increaseCounter();
+},{passive:false});
 
 minusBtn.addEventListener('click',()=>{
 if(count>0){
