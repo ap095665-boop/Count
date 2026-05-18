@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Delivery Counter</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#050505;
+color:white;
+min-height:100vh;
+overflow-x:hidden;
+}
+
+.app{
+max-width:520px;
+margin:auto;
+padding:20px 16px 120px;
+}
+
+.header{
+text-align:center;
+margin-top:10px;
+margin-bottom:30px;
+}
+
+.header h1{
+font-size:32px;
+font-weight:900;
+letter-spacing:2px;
+}
+
+.header p{
+color:#888;
+margin-top:8px;
+}
+
+.counter-wrapper{
+display:flex;
+justify-content:center;
+align-items:center;
+margin-top:15px;
+margin-bottom:25px;
+}
+
+.main-counter{
+width:280px;
+height:280px;
+border-radius:50%;
+background:linear-gradient(145deg,#121212,#1f1f1f);
+border:8px solid #ffffff22;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:95px;
+font-weight:900;
+user-select:none;
+cursor:pointer;
+position:relative;
+transition:0.12s;
+box-shadow:
+0 0 50px rgba(255,255,255,0.08),
+inset 0 0 25px rgba(255,255,255,0.04);
+}
+
+.main-counter:active{
+transform:scale(0.96);
+}
+
+.main-counter::after{
+content:'TAP';
+position:absolute;
+bottom:28px;
+font-size:18px;
+letter-spacing:4px;
+color:#777;
+}
+
+.controls{
+display:flex;
+gap:14px;
+margin-bottom:28px;
+}
+
+.controls button{
+flex:1;
+border:none;
+border-radius:18px;
+padding:18px;
+font-size:20px;
+font-weight:800;
+cursor:pointer;
+transition:0.2s;
+}
+
+.minus-btn{
+background:#ff3b30;
+color:white;
+}
+
+.save-btn{
+background:#00c853;
+color:white;
+}
+
+.orders-title{
+margin-bottom:18px;
+font-size:22px;
+font-weight:800;
+}
+
+.orders{
+display:flex;
+flex-direction:column;
+gap:18px;
+}
+
+.order-card{
+background:#101010;
+border:1px solid #242424;
+border-radius:28px;
+padding:18px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+box-shadow:0 0 20px rgba(255,255,255,0.03);
+}
+
+.order-left{
+display:flex;
+align-items:center;
+gap:14px;
+}
+
+.image-area{
+width:72px;
+height:72px;
+border-radius:50%;
+background:#181818;
+overflow:hidden;
+display:flex;
+align-items:center;
+justify-content:center;
+flex-shrink:0;
+border:2px solid #333;
+position:relative;
+}
+
+.image-area img{
+width:100%;
+height:100%;
+object-fit:cover;
+cursor:pointer;
+}
+
+.add-image-btn{
+width:100%;
+height:100%;
+border:none;
+background:#2962ff;
+color:white;
+font-size:11px;
+font-weight:700;
+cursor:pointer;
+padding:6px;
+}
+
+.order-info h2{
+font-size:21px;
+margin-bottom:4px;
+}
+
+.order-info p{
+color:#888;
+font-size:14px;
+}
+
+.count-circle{
+width:90px;
+height:90px;
+border-radius:50%;
+background:white;
+color:black;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:40px;
+font-weight:900;
+flex-shrink:0;
+}
+
+.bottom-bar{
+position:fixed;
+bottom:0;
+left:0;
+width:100%;
+background:#0d0d0d;
+padding:14px;
+display:flex;
+gap:12px;
+border-top:1px solid #222;
+}
+
+.bottom-bar button{
+flex:1;
+border:none;
+border-radius:16px;
+padding:16px;
+font-size:18px;
+font-weight:800;
+cursor:pointer;
+}
+
+.reset-btn{
+background:#ffcc00;
+color:black;
+}
+
+.refresh-btn{
+background:#ff1744;
+color:white;
+}
+
+.empty{
+text-align:center;
+color:#666;
+padding:40px 0;
+}
+
+.modal{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,0.95);
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:9999;
+padding:20px;
+}
+
+.modal img{
+max-width:100%;
+max-height:90vh;
+border-radius:24px;
+}
+
+.hidden-input{
+display:none;
+}
+
+@media(max-width:520px){
+.main-counter{
+width:240px;
+height:240px;
+font-size:82px;
+}
+
+.count-circle{
+width:74px;
+height:74px;
+font-size:34px;
+}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+<div class="header">
+<h1>DELIVERY COUNTER</h1>
+<p>Tap to count delivery products</p>
+</div>
+
+<div class="counter-wrapper">
+<div class="main-counter" id="counter">0</div>
+</div>
+
+<div class="controls">
+<button class="minus-btn" id="minusBtn">− Remove</button>
+<button class="save-btn" id="saveBtn">Save Order</button>
+</div>
+
+<h2 class="orders-title">Saved Orders</h2>
+
+<div class="orders" id="orders"></div>
+
+</div>
+
+<div class="bottom-bar">
+<button class="reset-btn" id="resetBtn">Reset</button>
+<button class="refresh-btn" id="refreshBtn">Refresh</button>
+</div>
+
+<script>
+const STORAGE_KEY='delivery-counter-orders';
+const EXPIRY_TIME=30*60*1000;
+
+let count=0;
+let orders=[];
+
+const counter=document.getElementById('counter');
+const minusBtn=document.getElementById('minusBtn');
+const saveBtn=document.getElementById('saveBtn');
+const resetBtn=document.getElementById('resetBtn');
+const refreshBtn=document.getElementById('refreshBtn');
+const ordersContainer=document.getElementById('orders');
+
+function vibrate(ms){
+if(navigator.vibrate){
+navigator.vibrate(ms);
+}
+}
+
+function updateCounter(){
+counter.textContent=count;
+}
+
+counter.addEventListener('click',()=>{
+count++;
+updateCounter();
+vibrate(25);
+});
+
+minusBtn.addEventListener('click',()=>{
+if(count>0){
+count--;
+updateCounter();
+}
+});
+
+saveBtn.addEventListener('click',()=>{
+if(count<=0)return;
+
+const order={
+id:Date.now(),
+count:count,
+image:'',
+timestamp:Date.now()
+};
+
+orders.push(order);
+
+if(orders.length>5){
+orders.shift();
+}
+
+saveOrders();
+renderOrders();
+
+count=0;
+updateCounter();
+
+vibrate([80,40,80]);
+});
+
+resetBtn.addEventListener('click',()=>{
+count=0;
+updateCounter();
+});
+
+refreshBtn.addEventListener('click',()=>{
+const ok=confirm('Delete all orders?');
+
+if(ok){
+localStorage.removeItem(STORAGE_KEY);
+orders=[];
+count=0;
+updateCounter();
+renderOrders();
+}
+});
+
+function saveOrders(){
+localStorage.setItem(STORAGE_KEY,JSON.stringify(orders));
+}
+
+function loadOrders(){
+const saved=localStorage.getItem(STORAGE_KEY);
+
+if(saved){
+const parsed=JSON.parse(saved);
+const now=Date.now();
+
+orders=parsed.filter(order=>now-order.timestamp<EXPIRY_TIME);
+
+saveOrders();
+renderOrders();
+}
+}
+
+function renderOrders(){
+ordersContainer.innerHTML='';
+
+if(orders.length===0){
+ordersContainer.innerHTML=`
+<div class="empty">
+No saved orders
+</div>
+`;
+return;
+}
+
+orders.forEach((order,index)=>{
+const card=document.createElement('div');
+card.className='order-card';
+
+card.innerHTML=`
+<div class="order-left">
+
+<div class="image-area">
+${order.image
+? `<img src="${order.image}" class="preview-image">`
+: `
+<button class="add-image-btn" data-id="${order.id}">
+ADD IMAGE
+</button>
+<input type="file" class="hidden-input" accept="image/*" capture="environment" data-id="${order.id}">
+`
+}
+</div>
+
+<div class="order-info">
+<h2>Order ${index+1}</h2>
+<p>Stored for 30 minutes</p>
+</div>
+
+</div>
+
+<div class="count-circle">
+${order.count}
+</div>
+`;
+
+ordersContainer.appendChild(card);
+
+const image=document.querySelectorAll('.preview-image');
+
+image.forEach(img=>{
+img.addEventListener('click',()=>{
+showImage(img.src);
+});
+});
+
+const addBtn=card.querySelector('.add-image-btn');
+const fileInput=card.querySelector('.hidden-input');
+
+if(addBtn && fileInput){
+addBtn.addEventListener('click',()=>{
+fileInput.click();
+});
+
+fileInput.addEventListener('change',(e)=>{
+const file=e.target.files[0];
+
+if(!file)return;
+
+const reader=new FileReader();
+
+reader.onload=function(event){
+const targetId=Number(addBtn.dataset.id);
+
+const orderIndex=orders.findIndex(o=>o.id===targetId);
+
+if(orderIndex!==-1){
+orders[orderIndex].image=event.target.result;
+
+saveOrders();
+renderOrders();
+}
+};
+
+reader.readAsDataURL(file);
+});
+}
+});
+}
+
+function showImage(src){
+const modal=document.createElement('div');
+modal.className='modal';
+
+modal.innerHTML=`
+<img src="${src}">
+`;
+
+modal.addEventListener('click',()=>{
+modal.remove();
+});
+
+document.body.appendChild(modal);
+}
+
+setInterval(()=>{
+const now=Date.now();
+
+orders=orders.filter(order=>now-order.timestamp<EXPIRY_TIME);
+
+saveOrders();
+renderOrders();
+},60000);
+
+loadOrders();
+updateCounter();
+</script>
+
+</body>
+</html>
